@@ -255,9 +255,9 @@ app.post('/api/mosques', async (req, res) => {
 });
 
 app.post('/api/update-prayer-times', async (req, res) => {
-  const { adminEmail, times } = req.body;
+  const { adminEmail, updatedTimes } = req.body;
 
-  if (!adminEmail || !times) {
+  if (!adminEmail || !updatedTimes) {
     return res.status(400).json({ error: 'Admin email and times are required' });
   }
 
@@ -272,7 +272,7 @@ app.post('/api/update-prayer-times', async (req, res) => {
     const mosque_id = userResult[0].mosque_id;
 
     // Update the salah table with the new prayer times
-    const updatePromises = Object.entries(times).map(([prayer, { adhan, salah }]) =>
+    const updatePromises = Object.entries(updatedTimes).map(([prayer, { adhan, salah }]) =>
       pool.query(
         'UPDATE salah SET azan_time = ?, salah_time = ? WHERE mosque_id = ? AND salah_name = ?',
         [adhan, salah, mosque_id, prayer.charAt(0).toUpperCase() + prayer.slice(1)]

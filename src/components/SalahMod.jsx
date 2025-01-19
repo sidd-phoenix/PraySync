@@ -78,7 +78,7 @@ const SalahMod = () => {
     }
 
     try {
-      console.log(updatedTimes)
+      console.log({adminEmail,updatedTimes})
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/update-prayer-times`, {
         method: 'POST',
         headers: {
