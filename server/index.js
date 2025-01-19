@@ -82,7 +82,13 @@ app.post('/auth/google', async (req, res) => {
         role: 'viewer'
       };
     } else {
-      user = users[0];
+      // Update existing user information
+      const [result] = await pool.query(
+        'UPDATE users SET name = ?, profile_pic = ? WHERE email = ?',
+        [name, picture, email]
+      );
+
+      user = users[0]; // Get the existing user
     }
 
     res.json({ user });
@@ -285,37 +291,6 @@ app.post('/api/update-prayer-times', async (req, res) => {
   } catch (error) {
     console.error('Error updating prayer times:', error);
     res.status(500).json({ error: 'Failed to update prayer times' });
-  }
-});
-
-// POST /api/users Endpoint
-app.post('/api/users', async (req, res) => {
-  try {
-    const { email, name, profile_pic } = req.body;
-
-    // Check if the user exists in the database
-    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-
-    let user;
-    if (rows.length > 0) {
-      // User exists
-      user = rows[0];
-    } else {
-      // User doesn't exist, create a new one
-      const role = 'viewer'; // Default role
-      await db.query('INSERT INTO users (email, name, profile_pic, role) VALUES (?, ?, ?, ?)', 
-        [email, name || '', profile_pic || '', role]
-      );
-
-      // Fetch the newly created user
-      const [newUserRows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-      user = newUserRows[0];
-    }
-
-    res.json(user);
-  } catch (error) {
-    console.error('Error handling user request:', error);
-    res.status(500).send('Server error');
   }
 });
 

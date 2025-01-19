@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useView } from '../contexts/ViewContext';
-import logo from '../../public/logo.jpg';
+import logo from '../assets/logo.jpg';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
