@@ -1,0 +1,79 @@
+.add-mosque-form {
+    padding: 1rem;
+    border-radius: 8px;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.form-section {
+    margin-bottom: 1.5rem; /* Space between sections */
+    padding: 1rem;
+    border: 1px solid #e2e8f0; /* Border around each section */
+    border-radius: 8px;
+}
+
+
+.grid-section {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr); /* Two columns */
+    gap: 1rem; /*Space between grid items */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.2rem; /* Space below label */
+    font-weight: bold;
+    text-align: left; /* Align label to the left */
+}
+
+.form-input {
+    padding: 0.4rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: #2563eb;
+}
+
+.required {
+    color: red; /* Highlight required fields */
+}
+
+.mosque-name{
+    grid-column: span 4;
+}
+
+.email{
+    grid-column: span 6;
+}
+
+.address-large {
+    grid-column: span 10; /* Make large inputs span both columns */
+}
+
+.address-small {
+    grid-column: span 2; /* Small inputs take one column */
+}
+
+.submit-button {
+    padding: 0.6rem 1.2rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.submit-button:hover {
+    background-color: #1d4ed8;
+}

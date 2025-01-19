@@ -1,0 +1,6 @@
+.main-content {
+    flex-grow: 1;
+    order: 1;
+    height: 100%;
+    /* border: 2px solid blue; */
+}

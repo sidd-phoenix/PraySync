@@ -1,0 +1,112 @@
+.search-container {
+    display: flex;
+    margin: 2rem auto;
+    max-width: 800px;
+    align-items: baseline;
+    /* border: 2px solid red; */
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem 0 0 0.5rem;
+    transition: border-color 0.2s;
+    /* border: 2px solid red; */
+}
+
+.search-button {
+    padding: 0.65rem 1.5rem 0.8rem 1.5rem;
+    border: 2px solid blue;
+    border-radius: 0 0.5rem 0.5rem 0;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    /* border: 2px solid red; */
+}
+
+.search-button:hover {
+    background-color: #1d4ed8;
+}
+
+.results-grid {
+    display: grid;
+    margin: 0 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    /* border: 2px solid red; */
+    /* padding: 2rem; */
+}
+
+.mosque-card {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    /* border: 2px solid red; */
+}
+
+.mosque-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mosque-card h3,h4{
+    margin: 0 0 1rem 0;
+    color: #2563eb;
+    /* border: 2px solid red; */
+}
+
+.mosque-card .address {
+    /* margin: 0 0 1rem 0; */
+    line-height: 1.5;
+    color: #4b5563;
+    /* border: 2px solid red; */
+}
+
+.mosque-card .coordinates {
+    color: #6b7280;
+    font-size: 0.875rem;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    /* border: 2px solid red; */
+}
+
+.prayer-table {
+    /* border: 2px solid red; */
+    overflow-x: auto;
+}
+
+.prayer-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.prayer-table th,
+.prayer-table td {
+    padding: 0.5rem;
+    text-align: left;
+    /* border-bottom: 1px solid #e5e7eb; */
+}
+
+.prayer-table th {
+    background-color: #f3f4f6;
+    font-weight: 600;
+    color: #374151;
+}
+
+.prayer-table td {
+    color: #6b7280;
+}
+
+/* .prayer-table tr:last-child td {
+    border-bottom: none;
+} */
+
+.prayer-table tr:hover {
+    background-color: #f9fafb;
+}

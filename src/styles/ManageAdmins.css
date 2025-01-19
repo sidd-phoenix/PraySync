@@ -1,0 +1,39 @@
+.manage-admins {
+    max-width: 800px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    text-align: center;
+}
+
+button {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+.admin-picture {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    border-radius: 50%; /* Make it circular */
+} 

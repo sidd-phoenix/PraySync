@@ -1,0 +1,33 @@
+# Dependency directories
+node_modules/
+
+# Build artifacts
+*.o
+*.out
+*.class
+*.pyc
+*.pyo
+*.exe
+*.dll
+
+# IDE configurations
+.vscode/
+.idea/
+*.iml
+.settings/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.bak
+*.tmp
+*.swp
+
+# Environment and sensitive files
+*.env
+*.key
+*.crt
+*.pem

@@ -1,0 +1,20 @@
+#root {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.app-container{
+  display: flex;
+  flex-direction: column;
+  /* border: 2px solid red; */
+}
+
+.combo-container {
+  display: flex;
+  flex-grow: 1;
+  width: 100vw;
+  height: 85vh;
+  /* border: 2px solid red; */
+}
