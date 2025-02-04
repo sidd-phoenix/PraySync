@@ -1,4 +1,4 @@
-import { useView } from '../contexts/ViewContext';
+import { useView } from '../contexts/ViewContext.jsx';
 import SearchnGrid from './SearchnGrid.jsx';
 import ManageAdmins from './ManageAdmins.jsx';
 import AddMosqueForm from './AddMosqueForm.jsx'
