@@ -17,8 +17,15 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 app.use(express.json());
 app.use(cors({
   origin: process.env.CLIENT_URL,
-  credentials: true
+  methods: "GET,POST,OPTIONS", // Allowed methods
+  allowedHeaders: "Content-Type, Authorization", // Required headers
+  credentials: true, // Allow cookies if needed
 }));
+
+// Handle preflight requests
+app.options("*", (req, res) => {
+  res.sendStatus(204);
+});
 
 // Database connection
 // const pool = mysql.createPool({

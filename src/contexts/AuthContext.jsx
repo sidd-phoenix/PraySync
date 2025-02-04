@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     const handleCredentialResponse = async (response) => {
         try {
             // Send the token to your backend
-            const result = await fetch(`${backend_url}/auth/google`, {
+            const result = await fetch(`${backend_url}auth/google`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
