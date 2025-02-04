@@ -8,7 +8,8 @@ const ManageAdmins = () => {
     const fetchAdmins = async () => {
         // Logic to fetch admins from the database
         try {
-            const serverUrl = 'http://localhost:3001/api/admins';
+            const backend_url=import.meta.env.VITE_BACKEND_URL
+            const serverUrl = `${backend_url}/api/admins`;
             const response = await fetch(serverUrl, {
                 method: 'GET',
                 headers: {

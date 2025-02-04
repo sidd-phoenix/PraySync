@@ -11,9 +11,10 @@ const SearchnGrid = () => {
             // console.warn('Search query is empty. Please enter a search term.');
             return;
         }
+        const backend_url=import.meta.env.VITE_BACKEND_URL
 
         try {
-            const serverUrl = 'http://localhost:3001/api/search'
+            const serverUrl = `${backend_url}/api/search`
             const response = await fetch(serverUrl, {
                 method: 'POST',
                 headers: {

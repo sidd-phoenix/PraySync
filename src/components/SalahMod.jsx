@@ -21,7 +21,8 @@ const SalahMod = () => {
       if (!adminEmail) return;
       
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/prayer-times?admin_email=${adminEmail}`);
+        const backend_url=import.meta.env.VITE_BACKEND_URL
+        const response = await fetch(`${backend_url}/api/prayer-times?admin_email=${adminEmail}`);
         if (!response.ok) {
           throw new Error('Failed to fetch prayer times');
         }
@@ -79,7 +80,8 @@ const SalahMod = () => {
 
     try {
       // console.log({adminEmail,updatedTimes})
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/update-prayer-times`, {
+      const backend_url=import.meta.env.VITE_BACKEND_URL
+      const response = await fetch(`${backend_url}/api/update-prayer-times`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
