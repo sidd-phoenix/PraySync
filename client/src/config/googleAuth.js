@@ -9,10 +9,3 @@ export const googleAuthConfig = {
   response_type: 'code',
   prompt: 'select_account'
 };
-
-// API endpoints
-export const AUTH_ENDPOINTS = {
-  GOOGLE_LOGIN: `${BACKEND_URL}/auth/google`,
-  LOGOUT: `${BACKEND_URL}/auth/logout`,
-  SESSION: `${BACKEND_URL}/auth/session`
-}; 
