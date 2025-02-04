@@ -7,7 +7,6 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 dotenv.config();
-
 const app = express();
 
 // Google OAuth client
@@ -20,7 +19,10 @@ app.use(cors({
   credentials: true, // Allow cookies if needed
 }));
 
+/*  -------------------------------------------------------- */
+
 // Database connection
+
 // const pool = mysql.createPool({
 //   host: process.env.DB_HOST,
 //   user: process.env.DB_USER,
@@ -43,7 +45,13 @@ const pgPool = new Pool({
   }
 });
 
+/*  -------------------------------------------------------- */
 
+app.get('/',(req,res) =>{
+  res.json('Server is running.')
+})
+
+/*  -------------------------------------------------------- */
 
 // Auth endpoints
 app.get('/auth/session', (req, res) => {
