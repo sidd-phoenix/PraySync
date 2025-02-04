@@ -51,6 +51,7 @@ app.get('/auth/session', (req, res) => {
   res.json({ user: null });
 });
 
+//postgres/neondb used
 app.post('/auth/google', async (req, res) => {
   try {
     const { credential } = req.body;
@@ -64,30 +65,25 @@ app.post('/auth/google', async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
-    // Check if user exists in database
-    const [users] = await pool.query(
-      'SELECT * FROM users WHERE email = ?',
+    // Check if user exists in PostgreSQL database
+    const { rows: users } = await pgPool.query(
+      'SELECT * FROM users WHERE email = $1',
       [email]
     );
 
     let user;
     if (users.length === 0) {
       // Create new user
-      const [result] = await pool.query(
-        'INSERT INTO users (email, name, profile_pic, role) VALUES (?, ?, ?, ?)',
+      await pgPool.query(
+        'INSERT INTO users (email, name, profile_pic, role) VALUES ($1, $2, $3, $4)',
         [email, name, picture, 'viewer']
       );
 
-      user = {
-        email,
-        name,
-        profile_pic: picture,
-        role: 'viewer'
-      };
+      user = { email, name, profile_pic: picture, role: 'viewer' };
     } else {
       // Update existing user information
-      const [result] = await pool.query(
-        'UPDATE users SET name = ?, profile_pic = ? WHERE email = ?',
+      await pgPool.query(
+        'UPDATE users SET name = $1, profile_pic = $2 WHERE email = $3',
         [name, picture, email]
       );
 
@@ -100,6 +96,57 @@ app.post('/auth/google', async (req, res) => {
     res.status(401).json({ error: 'Authentication failed' });
   }
 });
+
+// // mysql DB used
+// app.post('/auth/google', async (req, res) => {
+//   try {
+//     const { credential } = req.body;
+
+//     // Verify Google token
+//     const ticket = await client.verifyIdToken({
+//       idToken: credential,
+//       audience: process.env.GOOGLE_CLIENT_ID
+//     });
+
+//     const payload = ticket.getPayload();
+//     const { email, name, picture } = payload;
+
+//     // Check if user exists in database
+//     const [users] = await pool.query(
+//       'SELECT * FROM users WHERE email = ?',
+//       [email]
+//     );
+
+//     let user;
+//     if (users.length === 0) {
+//       // Create new user
+//       const [result] = await pool.query(
+//         'INSERT INTO users (email, name, profile_pic, role) VALUES (?, ?, ?, ?)',
+//         [email, name, picture, 'viewer']
+//       );
+
+//       user = {
+//         email,
+//         name,
+//         profile_pic: picture,
+//         role: 'viewer'
+//       };
+//     } else {
+//       // Update existing user information
+//       const [result] = await pool.query(
+//         'UPDATE users SET name = ?, profile_pic = ? WHERE email = ?',
+//         [name, picture, email]
+//       );
+
+//       user = users[0]; // Get the existing user
+//     }
+
+//     res.json({ user });
+//   } catch (error) {
+//     console.error('Google auth error:', error);
+//     res.status(401).json({ error: 'Authentication failed' });
+//   }
+// });
 
 app.post('/auth/logout', (req, res) => {
   res.json({ success: true });
