@@ -36,9 +36,6 @@ const AddMosqueForm = () => {
 
     return (
         <form onSubmit={handleAddMosque} className="add-mosque-form">
-
-            <button type="submit" className="submit-button">Add Mosque</button>
-            
             <div className="form-section grid-section">
                 <div className="form-group mosque-name">
                     <label>
@@ -165,6 +162,8 @@ const AddMosqueForm = () => {
                     />
                 </div>
             </div>
+
+            <button type="submit" className="submit-button">Add Mosque</button>
         </form>
     )
 }

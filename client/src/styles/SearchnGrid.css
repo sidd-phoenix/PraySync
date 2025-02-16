@@ -23,6 +23,7 @@
     background-color: #2563eb;
     color: white;
     cursor: pointer;
+    width: 5vw;
     transition: background-color 0.2s;
     /* border: 2px solid red; */
 }

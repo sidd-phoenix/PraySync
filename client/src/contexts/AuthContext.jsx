@@ -16,7 +16,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [userRole, setUserRole] = useState('viewer');
+    const [userRole, setUserRole] = useState('manager');
     const [loading, setLoading] = useState(true);
 
     // Initialize Google OAuth
