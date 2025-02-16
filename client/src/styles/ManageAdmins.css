@@ -2,6 +2,7 @@
     max-width: 800px;
     margin: auto;
     font-family: Arial, sans-serif;
+    padding: 1rem; /* Add padding for better spacing */
 }
 
 h2 {
@@ -21,6 +22,10 @@ button:hover {
     background-color: #45a049;
 }
 
+.table-container {
+    overflow-x: auto; /* Allow horizontal scrolling for the table */
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -36,4 +41,35 @@ th, td {
     width: 50px; /* Adjust size as needed */
     height: 50px; /* Adjust size as needed */
     border-radius: 50%; /* Make it circular */
+}
+
+/* New media query for mobile responsiveness */
+@media (max-width: 768px) {
+    .manage-admins {
+        padding: 0.5rem; /* Reduce padding for smaller screens */
+        width: 90vw
+    }
+
+    button {
+        width: 100%; /* Make buttons full width */
+        padding: 0.8rem; /* Adjust button padding */
+    }
+
+    .table-container {
+        overflow-x: auto; /* Allow horizontal scrolling for the table */
+    
+    }
+
+    table {
+        font-size: 0.4rem; /* Reduce font size for table */
+    }
+
+    th, td {
+        padding: 8px; /* Adjust padding for table cells */
+    }
+
+    .admin-picture {
+        width: 40px; /* Adjust size for smaller screens */
+        height: 40px; /* Adjust size for smaller screens */
+    }
 } 

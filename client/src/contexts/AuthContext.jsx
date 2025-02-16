@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { GOOGLE_CLIENT_ID } from '../config/googleAuth';
+
 
 const AuthContext = createContext();
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const backend_url = import.meta.env.VITE_BACKEND_URL
 
 export const useAuth = () => {
@@ -15,7 +16,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [userRole, setUserRole] = useState('viewer');
+    const [userRole, setUserRole] = useState('manager');
     const [loading, setLoading] = useState(true);
 
     // Initialize Google OAuth

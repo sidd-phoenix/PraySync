@@ -110,3 +110,22 @@
 .prayer-table tr:hover {
     background-color: #f9fafb;
 }
+
+/* New media query for smaller screens */
+@media (max-width: 768px) {
+    .search-container {
+        margin: 1rem auto; /* Reduce margin */
+        max-width: 90%; /* Make it take more width on small screens */
+    }
+
+    .search-input {
+        padding: 0.5rem; /* Reduce padding */
+        font-size: 0.9rem; /* Smaller font size */
+    }
+
+    .search-button {
+        padding: 0.5rem 1rem; /* Reduce button padding */
+        font-size: 0.9rem; /* Smaller font size */
+        width: 15vw;
+    }
+}

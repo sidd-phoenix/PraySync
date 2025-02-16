@@ -13,11 +13,10 @@
     border-radius: 8px;
 }
 
-
 .grid-section {
     display: grid;
     grid-template-columns: repeat(12, 1fr); /* Two columns */
-    gap: 1rem; /*Space between grid items */
+    gap: 1rem; /* Space between grid items */
 }
 
 .form-group {
@@ -47,11 +46,11 @@
     color: red; /* Highlight required fields */
 }
 
-.mosque-name{
+.mosque-name {
     grid-column: span 4;
 }
 
-.email{
+.email {
     grid-column: span 6;
 }
 
@@ -76,4 +75,30 @@
 
 .submit-button:hover {
     background-color: #1d4ed8;
+}
+
+/* New media query for mobile responsiveness */
+@media (max-width: 768px) {
+    .grid-section {
+        grid-template-columns: 1fr; /* Single column layout */
+    }
+
+    .mosque-name,
+    .email,
+    .address-large,
+    .address-small {
+        grid-column: span 1; /* Each input takes full width */
+    }
+
+    .form-section {
+        padding: 0.5rem; /* Reduce padding for smaller screens */
+    }
+
+    .form-input {
+        padding: 0.5rem; /* Adjust input padding */
+    }
+
+    .submit-button {
+        padding: 0.5rem; /* Adjust button padding */
+    }
 }

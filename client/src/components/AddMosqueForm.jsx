@@ -4,12 +4,12 @@ import '../styles/AddMosqueForm.css'
 const AddMosqueForm = () => {
 
     const [newMosque, setNewMosque] = useState({});
-    const backend_url=import.meta.env.VITE_BACKEND_URL;
+    const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     const handleAddMosque = async (e) => {
         e.preventDefault();
         console.log('Adding mosque:', newMosque);
-        
+
         try {
             const response = await fetch(`${backend_url}/api/mosques`, { // Update the endpoint as needed
                 method: 'POST',
@@ -36,6 +36,9 @@ const AddMosqueForm = () => {
 
     return (
         <form onSubmit={handleAddMosque} className="add-mosque-form">
+
+            <button type="submit" className="submit-button">Add Mosque</button>
+            
             <div className="form-section grid-section">
                 <div className="form-group mosque-name">
                     <label>
@@ -162,8 +165,6 @@ const AddMosqueForm = () => {
                     />
                 </div>
             </div>
-
-            <button type="submit" className="submit-button">Add Mosque</button>
         </form>
     )
 }
