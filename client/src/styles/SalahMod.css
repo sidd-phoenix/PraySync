@@ -1,6 +1,7 @@
 .salah-mod {
-    max-width: 600px;
+    max-width: 800px;
     margin: auto;
+    padding: 1rem;
     font-family: Arial, sans-serif;
   }
   
@@ -30,13 +31,14 @@
   
   .time-setters {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    flex: 2;
   }
   
   .time-setter {
-    margin-left: 20px;
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
   }
   
   label {
@@ -44,7 +46,7 @@
   }
   
   input[type="time"] {
-    margin-left: 5px;
+    flex: 1;
   }
   
   button {
@@ -54,8 +56,27 @@
     border: none;
     cursor: pointer;
     margin-top: 10px;
+    width: 100%;
   }
   
   button:hover {
     background-color: #45a049;
+  }
+  
+  @media (max-width: 768px) {
+    .salah-mod {
+      padding: 0.5rem;
+    }
+  
+    .prayer-section {
+      flex-direction: column;
+    }
+  
+    .time-setters {
+      flex-direction: column;
+    }
+  
+    button {
+      padding: 0.5rem;
+    }
   } 
