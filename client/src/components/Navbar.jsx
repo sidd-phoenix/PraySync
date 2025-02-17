@@ -5,11 +5,16 @@ import '../styles/Navbar.css';
 
 const Navbar = () => {
 
-  const { currentUser, signInWithGoogle, logout, userRole, setCurrentUser, setUserRole } = useAuth();
+  const { currentUser, logout, userRole, setCurrentUser, setUserRole, signInWithGoogle } = useAuth();
   const { setView } = useView();
+  const backend_url = import.meta.env.VITE_BACKEND_URL
   // console.log(currentUser);
 
-  /* Reload persistent user auth storage using local storage */
+  /* 
+  Initiate Google
+  Reload persistent user auth storage using local storage 
+  */
+
   useEffect(() => {
     // Get stored user if present in localStorage
     const storedUser = localStorage.getItem('user');
@@ -19,8 +24,40 @@ const Navbar = () => {
       setCurrentUser(user);
       setUserRole(user.role);
     }
-    
+
+    handleCredentialResponse();
   }, []);
+
+  const handleCredentialResponse = async () => {
+    // Extract the code from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    // console.log(code)
+
+    if (code) {
+      try {
+        // Send the code to your backend to exchange for tokens
+        const result = await fetch(`${backend_url}/auth/google/callback`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code }), // Send the code to the backend
+        });
+
+        const data = await result.json();
+        if (data.user) {
+          setCurrentUser(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          setUserRole(data.user.role || 'viewer');
+        }
+        window.location.href = '/';
+      } catch (error) {
+        console.error('Error during token exchange:', error);
+        window.location.href = '/';
+      }
+    }
+  };
 
   const handleAuth = async () => {
     try {
@@ -29,13 +66,13 @@ const Navbar = () => {
         await logout();
         localStorage.removeItem('user');
       } else {
-        await signInWithGoogle();
+        signInWithGoogle();
       }
     } catch (error) {
       console.error("Authentication error:", error);
     }
   };
-  
+
   // console.log("Home")
   return (
     <nav className="navbar">

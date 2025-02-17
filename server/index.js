@@ -10,7 +10,11 @@ dotenv.config();
 const app = express();
 
 // Google OAuth client
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const client = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET, 
+  process.env.GOOGLE_REDIRECT_URI
+);
 
 // Middleware
 app.use(express.json());
@@ -47,7 +51,7 @@ const pgPool = new Pool({
 
 /*  -------------------------------------------------------- */
 
-app.get('/',(req,res) =>{
+app.get('/', (req, res) => {
   res.json('Server is running.')
 })
 
@@ -59,50 +63,64 @@ app.get('/auth/session', (req, res) => {
   res.json({ user: null });
 });
 
-//postgres/neondb used
-app.post('/auth/google', async (req, res) => {
-  try {
-    const { credential } = req.body;
+// Redirect to Google for authentication
+app.get('/auth/google', (req, res) => {
+  const scopes = [
+    'https://www.googleapis.com/auth/userinfo.profile openid email' 
+    ];
 
-    // Verify Google token
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID
-    });
+  const redirectUrl = client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes
+  });
+  // console.log(redirectUrl)
+  // console.log(process.env.CLIENT_URL)
+  res.redirect(redirectUrl);
+});
 
-    const payload = ticket.getPayload();
-    const { email, name, picture } = payload;
+// Handle the callback from Google
+app.post('/auth/google/callback', async (req, res) => {
+  console.log("callback")
+  // console.log(req.body)
+  const { code } = req.body;
+  const { tokens } = await client.getToken(code);
+  client.setCredentials(tokens);
+ 
+  // Get user info
+  const ticket = await client.verifyIdToken({
+    idToken: tokens.id_token,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+  const { email, name, picture } = payload;
 
-    // Check if user exists in PostgreSQL database
-    const { rows: users } = await pgPool.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
+  // Check if user exists in PostgreSQL database
+  const { rows: users } = await pgPool.query(
+    'SELECT * FROM users WHERE email = $1',
+    [email]
+  );
+
+  let user;
+  if (users.length === 0) {
+    // Create new user
+    await pgPool.query(
+      'INSERT INTO users (email, name, profile_pic, role) VALUES ($1, $2, $3, $4)',
+      [email, name, picture, 'viewer']
     );
 
-    let user;
-    if (users.length === 0) {
-      // Create new user
-      await pgPool.query(
-        'INSERT INTO users (email, name, profile_pic, role) VALUES ($1, $2, $3, $4)',
-        [email, name, picture, 'viewer']
-      );
+    user = { email, name, profile_pic: picture, role: 'viewer' };
+  } else {
+    // Update existing user information
+    await pgPool.query(
+      'UPDATE users SET name = $1, profile_pic = $2 WHERE email = $3',
+      [name, picture, email]
+    );
 
-      user = { email, name, profile_pic: picture, role: 'viewer' };
-    } else {
-      // Update existing user information
-      await pgPool.query(
-        'UPDATE users SET name = $1, profile_pic = $2 WHERE email = $3',
-        [name, picture, email]
-      );
-
-      user = users[0]; // Get the existing user
-    }
-
-    res.json({ user });
-  } catch (error) {
-    console.error('Google auth error:', error);
-    res.status(401).json({ error: 'Authentication failed' });
+    user = users[0]; // Get the existing user
   }
+
+  // Set user in session or send back to client
+  res.json({ user });
 });
 
 // // mysql DB used
