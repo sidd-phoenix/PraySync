@@ -98,7 +98,7 @@ app.get('/auth/google', (req, res) => {
 
 // Handle the callback from Google
 app.get('/auth/google/callback', async (req, res) => {
-  // console.log("callback")
+  console.log("callback")
   const { code } = req.query;
   // const { code } = req.body;
   try {
