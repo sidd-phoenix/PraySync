@@ -8,10 +8,6 @@ const Navbar = () => {
   const { setView } = useView();
   const backend_url = import.meta.env.VITE_BACKEND_URL;
 
-  const hasTokenCookie = () => {
-    return document.cookie.split("; ").some((row) => row.startsWith("token="));
-  };
-
   useEffect(() => {
     const fetchUser = async () => {
       try {

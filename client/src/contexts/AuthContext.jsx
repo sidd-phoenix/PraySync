@@ -13,9 +13,12 @@ export const useAuth = () => {
     return context;
 };
 
-const signInWithGoogle = () => {
+const signInWithGoogle = async () => {
+    const response = await fetch(`${backend_url}/auth/googleAuthUrl`);
+    const data = await response.json();
+    // console.log(data)
     // Redirect to the Google sign-in page
-    window.location.href = `${backend_url}/auth/google`;
+    window.location.href = `${data.redirectUrl}`;
 };
 
 
