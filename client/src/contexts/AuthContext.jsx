@@ -15,7 +15,7 @@ export const useAuth = () => {
 
 const signInWithGoogle = () => {
     // Redirect to the Google sign-in page
-    window.location.href = `${backend_url}/auth/google`; // Adjust the URL as needed
+    window.location.href = `${backend_url}/auth/google`;
 };
 
 

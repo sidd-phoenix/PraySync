@@ -8,7 +8,7 @@ const AddMosqueForm = () => {
 
     const handleAddMosque = async (e) => {
         e.preventDefault();
-        console.log('Adding mosque:', newMosque);
+        // console.log('Adding mosque:', newMosque);
 
         try {
             const response = await fetch(`${backend_url}/api/mosques`, { // Update the endpoint as needed
@@ -24,7 +24,7 @@ const AddMosqueForm = () => {
             }
 
             const data = await response.json();
-            console.log('Mosque added successfully:', data);
+            // console.log('Mosque added successfully:', data);
             alert('Mosque added successfully');
             // Optionally, reset the form or handle success
         } catch (error) {

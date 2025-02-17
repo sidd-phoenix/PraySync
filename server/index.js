@@ -5,22 +5,26 @@ import dotenv from 'dotenv';
 import { OAuth2Client } from 'google-auth-library';
 import pkg from 'pg';
 const { Pool } = pkg;
-
+import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 const app = express();
 
-// Middleware
-app.use(express.json());
-app.use(cors({
+const corsOptions = {
   origin: process.env.CLIENT_URL,
   credentials: true, // Allow cookies if needed
-}));
+};
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // Google OAuth client
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET, 
-  process.env.CLIENT_URL
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
 );
 
 
@@ -59,69 +63,96 @@ app.get('/', (req, res) => {
 /*  -------------------------------------------------------- */
 
 // Auth endpoints
-app.get('/auth/session', (req, res) => {
-  // For now, return no active session
-  res.json({ user: null });
+app.get("/auth/user", (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use your actual secret key
+    res.json({
+      name: decoded.name,
+      email: decoded.email,
+      picture: decoded.profile_pic,
+      role: decoded.role,
+    });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
 });
 
 // Redirect to Google for authentication
 app.get('/auth/google', (req, res) => {
   const scopes = [
-    'https://www.googleapis.com/auth/userinfo.profile openid email' 
-    ];
+    'profile openid email'
+  ];
 
   const redirectUrl = client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes
   });
-  // console.log(redirectUrl)
-  // console.log(process.env.CLIENT_URL)
+  // Redirects frontend to Google for authentication
   res.redirect(redirectUrl);
 });
 
 // Handle the callback from Google
-app.post('/auth/google/callback', async (req, res) => {
-  console.log("callback")
-  // console.log(req.body)
-  const { code } = req.body;
-  const { tokens } = await client.getToken(code);
-  client.setCredentials(tokens);
- 
-  // Get user info
-  const ticket = await client.verifyIdToken({
-    idToken: tokens.id_token,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  });
-  const payload = ticket.getPayload();
-  const { email, name, picture } = payload;
+app.get('/auth/google/callback', async (req, res) => {
+  // console.log("callback")
+  const { code } = req.query;
+  // const { code } = req.body;
+  try {
+    const { tokens } = await client.getToken(code);
+    client.setCredentials(tokens);
 
-  // Check if user exists in PostgreSQL database
-  const { rows: users } = await pgPool.query(
-    'SELECT * FROM users WHERE email = $1',
-    [email]
-  );
+    // Get user info
+    const ticket = await client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
 
-  let user;
-  if (users.length === 0) {
-    // Create new user
-    await pgPool.query(
-      'INSERT INTO users (email, name, profile_pic, role) VALUES ($1, $2, $3, $4)',
-      [email, name, picture, 'viewer']
+    // Check if user exists in PostgreSQL database
+    const { rows: users } = await pgPool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
     );
 
-    user = { email, name, profile_pic: picture, role: 'viewer' };
-  } else {
-    // Update existing user information
-    await pgPool.query(
-      'UPDATE users SET name = $1, profile_pic = $2 WHERE email = $3',
-      [name, picture, email]
-    );
+    let user;
+    if (users.length === 0) {
+      // Create new user
+      await pgPool.query(
+        'INSERT INTO users (email, name, profile_pic, role) VALUES ($1, $2, $3, $4)',
+        [email, name, picture, 'viewer']
+      );
 
-    user = users[0]; // Get the existing user
+      user = { email, name, profile_pic: picture, role: 'viewer' };
+    } else {
+      // Update existing user information
+      await pgPool.query(
+        'UPDATE users SET name = $1, profile_pic = $2 WHERE email = $3',
+        [name, picture, email]
+      );
+
+      user = users[0]; // Get the existing user
+    }
+
+    const jwtToken = jwt.sign(
+      user,
+      process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    // Store token in cookies
+    res.cookie("token", jwtToken, { httpOnly: true });
+
+    res.redirect(process.env.CLIENT_URL);
+
+  } catch (error) {
+    console.error('Error during token exchange:', error);
+    res.status(500).send("Authentication failed");
   }
-
-  // Set user in session or send back to client
-  res.json({ user });
 });
 
 // // mysql DB used
@@ -176,7 +207,8 @@ app.post('/auth/google/callback', async (req, res) => {
 // });
 
 app.post('/auth/logout', (req, res) => {
-  res.json({ success: true });
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully" });
 });
 
 

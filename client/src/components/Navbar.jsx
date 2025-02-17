@@ -1,69 +1,47 @@
-import React, { useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useView } from '../contexts/ViewContext';
-import '../styles/Navbar.css';
+import React, { useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useView } from "../contexts/ViewContext";
+import "../styles/Navbar.css";
 
 const Navbar = () => {
-
   const { currentUser, logout, userRole, setCurrentUser, setUserRole, signInWithGoogle } = useAuth();
   const { setView } = useView();
-  const backend_url = import.meta.env.VITE_BACKEND_URL
-  // console.log(currentUser);
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
-  /* 
-  Initiate Google
-  Reload persistent user auth storage using local storage 
-  */
+  const hasTokenCookie = () => {
+    return document.cookie.split("; ").some((row) => row.startsWith("token="));
+  };
 
   useEffect(() => {
-    // Get stored user if present in localStorage
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      // console.log(user);
-      setCurrentUser(user);
-      setUserRole(user.role);
-    }
-
-    handleCredentialResponse();
-  }, []);
-
-  const handleCredentialResponse = async () => {
-    // Extract the code from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    // console.log(code)
-
-    if (code) {
+    const fetchUser = async () => {
       try {
-        // Send the code to your backend to exchange for tokens
-        const result = await fetch(`${backend_url}/auth/google/callback`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code }), // Send the code to the backend
+        const response = await fetch(`${backend_url}/auth/user`, {
+          credentials: "include", // Ensures cookies are sent
         });
 
-        const data = await result.json();
-        if (data.user) {
-          setCurrentUser(data.user);
-          localStorage.setItem('user', JSON.stringify(data.user));
-          setUserRole(data.user.role || 'viewer');
+        if (response.ok) {
+          const data = await response.json();
+          setCurrentUser({
+            name: data.name,
+            email: data.email,
+            profile_pic: data.picture,
+          });
+          setUserRole(data.role);
         }
-        window.location.href = '/';
       } catch (error) {
-        console.error('Error during token exchange:', error);
+        console.error("Error fetching user:", error);
       }
-    }
-  };
+    };
+
+    fetchUser();
+  }, []);
 
   const handleAuth = async () => {
     try {
       if (currentUser) {
-        setView('home');
+        setView("home");
         await logout();
-        localStorage.removeItem('user');
+        window.location.href = "/";
       } else {
         signInWithGoogle();
       }
@@ -72,25 +50,20 @@ const Navbar = () => {
     }
   };
 
-  // console.log("Home")
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <img src='./logo.jpg' alt="SalaahLink Logo" className="navbar-logo" />
+          <img src="./logo.jpg" alt="SalaahLink Logo" className="navbar-logo" />
           <h1>SalaahLink</h1>
-          {userRole !== 'viewer' && (
+          {userRole && userRole !== "viewer" && (
             <span className="user-role">{userRole}</span>
           )}
         </div>
         <div className="navbar-auth">
           {currentUser ? (
             <div className="profile-container">
-              <img
-                src={currentUser.profile_pic}
-                alt="Profile"
-                className="profile-pic"
-              />
+              <img src={currentUser.profile_pic} alt="Profile" className="profile-pic" />
               <button className="logout-btn" onClick={handleAuth}>
                 Logout
               </button>
@@ -106,4 +79,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
