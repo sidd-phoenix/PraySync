@@ -9,6 +9,13 @@ const { Pool } = pkg;
 dotenv.config();
 const app = express();
 
+// Middleware
+app.use(express.json());
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true, // Allow cookies if needed
+}));
+
 // Google OAuth client
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
@@ -16,12 +23,6 @@ const client = new OAuth2Client(
   process.env.CLIENT_URL
 );
 
-// Middleware
-app.use(express.json());
-app.use(cors({
-  origin: process.env.CLIENT_URL,
-  credentials: true, // Allow cookies if needed
-}));
 
 /*  -------------------------------------------------------- */
 
