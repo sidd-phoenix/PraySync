@@ -54,7 +54,6 @@ const Navbar = () => {
         window.location.href = '/';
       } catch (error) {
         console.error('Error during token exchange:', error);
-        window.location.href = '/';
       }
     }
   };
