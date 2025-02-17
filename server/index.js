@@ -81,6 +81,7 @@ app.get('/auth/google', (req, res) => {
 // Handle the callback from Google
 app.post('/auth/google/callback', async (req, res) => {
   console.log("callback")
+  res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
   // console.log(req.body)
   const { code } = req.body;
   const { tokens } = await client.getToken(code);
