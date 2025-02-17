@@ -83,7 +83,7 @@ app.get("/auth/user", (req, res) => {
 });
 
 // Redirect to Google for authentication
-app.get('/auth/googleAuthUrl', (req, res) => {
+app.get('/auth/google', (req, res) => {
   const scopes = [
     'profile openid email'
   ];
@@ -92,7 +92,8 @@ app.get('/auth/googleAuthUrl', (req, res) => {
     access_type: 'offline',
     scope: scopes
   });
-  res.json({ redirectUrl });
+  // Redirects frontend to Google for authentication
+  res.redirect(redirectUrl);
 });
 
 // Handle the callback from Google
