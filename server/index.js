@@ -100,17 +100,17 @@ app.get('/auth/google', (req, res) => {
 app.get('/auth/google/callback', async (req, res) => {
   console.log("callback")
   const { code } = req.query;
-  console.log(code)
   // const { code } = req.body;
   try {
     const { tokens } = await client.getToken(code);
     client.setCredentials(tokens);
-
+    
     // Get user info
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
+    console.log(ticket)
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
