@@ -103,6 +103,7 @@ app.get('/auth/google/callback', async (req, res) => {
   // const { code } = req.body;
   try {
     const { tokens } = await client.getToken(code);
+    console.log(tokens)
     client.setCredentials(tokens);
     
     // Get user info
@@ -110,7 +111,6 @@ app.get('/auth/google/callback', async (req, res) => {
       idToken: tokens.id_token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    console.log(ticket)
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
