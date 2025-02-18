@@ -152,7 +152,11 @@ app.get('/auth/google/callback', async (req, res) => {
     });
 
     // Store token in cookies
-    res.cookie("token", jwtToken, { httpOnly: true });
+    res.cookie("token", jwtToken, { 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+      sameSite: 'none', // Adjust as necessary
+    });
 
     res.redirect(process.env.CLIENT_URL);
 
