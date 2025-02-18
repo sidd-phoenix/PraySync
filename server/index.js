@@ -101,10 +101,17 @@ app.get('/auth/google/callback', async (req, res) => {
   console.log("callback")
   const { code } = req.query;
   // const { code } = req.body;
+  if (!code) {
+    return res.status(400).send("No code provided");
+  }
+
   try {
-    const { tokens } = client.getToken(code);
+    const { tokens } = await client.getToken(code); // Ensure this is awaited
+    if (!tokens) {
+      throw new Error("No tokens received");
+    }
     client.setCredentials(tokens);
-    
+
     // Get user info
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
