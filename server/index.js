@@ -98,17 +98,17 @@ app.get('/auth/google', (req, res) => {
 
 // Handle the callback from Google
 app.get('/auth/google/callback', async (req, res) => {
-  console.log("callback")
+  console.log("callback");
   const { code } = req.query;
-  // const { code } = req.body;
+
   if (!code) {
     return res.status(400).send("No code provided");
   }
 
   try {
     const { tokens } = await client.getToken(code); // Ensure this is awaited
-    if (!tokens) {
-      throw new Error("No tokens received");
+    if (!tokens || !tokens.id_token) {
+      throw new Error("No tokens received or id_token is missing");
     }
     client.setCredentials(tokens);
 
