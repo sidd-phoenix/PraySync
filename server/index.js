@@ -218,7 +218,12 @@ app.get('/auth/google/callback', async (req, res) => {
 // });
 
 app.post('/auth/logout', (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", { 
+    httpOnly: true, 
+    secure: process.env.NODE_ENV === 'production', // Match the secure setting
+    sameSite: 'none', // Match the sameSite setting
+    path: '/' // Specify the path if necessary
+  });
   res.json({ message: "Logged out successfully" });
 });
 
