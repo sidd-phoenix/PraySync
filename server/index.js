@@ -100,6 +100,7 @@ app.get('/auth/google', (req, res) => {
 app.get('/auth/google/callback', async (req, res) => {
   console.log("callback")
   const { code } = req.query;
+  console.log(code)
   // const { code } = req.body;
   try {
     const { tokens } = await client.getToken(code);
