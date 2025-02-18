@@ -106,7 +106,7 @@ app.get('/auth/google/callback', async (req, res) => {
   }
 
   try {
-    const { tokens } = await client.getToken(code); // Ensure this is awaited
+    const { tokens } = client.getToken(code); // Ensure this is awaited
     if (!tokens || !tokens.id_token) {
       throw new Error("No tokens received or id_token is missing");
     }
