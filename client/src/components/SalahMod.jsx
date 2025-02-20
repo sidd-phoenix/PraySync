@@ -61,6 +61,7 @@ const SalahMod = () => {
     e.preventDefault();
     
     if (!originalTimes) return;
+    console.log('times after submit',times)
     
     // Find changes by comparing current times with original times
     const updatedTimes = {};
