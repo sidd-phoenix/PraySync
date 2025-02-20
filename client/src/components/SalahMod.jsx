@@ -12,7 +12,7 @@ const SalahMod = () => {
   });
 
   
-  const [originalTimes, setOriginalTimes] = useState(null); // Store original times
+  const [originalTimes, setOriginalTimes] = useState(times); // Store original times
   const { currentUser } = useAuth(); // Get currentUser from useAuth
   const adminEmail = currentUser?.email;
   
@@ -61,7 +61,6 @@ const SalahMod = () => {
     e.preventDefault();
     
     if (!originalTimes) return;
-    console.log('times after submit',times)
     
     // Find changes by comparing current times with original times
     const updatedTimes = {};
