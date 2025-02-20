@@ -57,6 +57,7 @@ const SalahMod = () => {
   };
   
   const handleSubmit = async (e) => {
+    console.log('times',times)
     e.preventDefault();
     
     if (!originalTimes) return;
