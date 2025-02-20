@@ -413,13 +413,28 @@ app.post('/api/update-prayer-times', async (req, res) => {
 
     const mosque_id = userResult[0].mosque_id;
 
-    // Update prayer times
-    const updatePromises = Object.entries(updatedTimes).map(([prayer, { adhan, salah }]) =>
-      pgPool.query(
-        'UPDATE salah SET azan_time = $1, salah_time = $2 WHERE mosque_id = $3 AND salah_name = $4',
-        [adhan, salah, mosque_id, prayer.charAt(0).toUpperCase() + prayer.slice(1)]
-      )
-    );
+    // Update prayer times or insert if they don't exist
+    const updatePromises = Object.entries(updatedTimes).map(async ([prayer, { adhan, salah }]) => {
+      // Check if the prayer time exists
+      const { rowCount } = await pgPool.query(
+        'SELECT * FROM salah WHERE mosque_id = $1 AND salah_name = $2',
+        [mosque_id, prayer.charAt(0).toUpperCase() + prayer.slice(1)]
+      );
+
+      if (rowCount > 0) {
+        // Update existing prayer time
+        await pgPool.query(
+          'UPDATE salah SET azan_time = $1, salah_time = $2 WHERE mosque_id = $3 AND salah_name = $4',
+          [adhan, salah, mosque_id, prayer.charAt(0).toUpperCase() + prayer.slice(1)]
+        );
+      } else {
+        // Insert new prayer time if it doesn't exist
+        await pgPool.query(
+          'INSERT INTO salah (mosque_id, salah_name, azan_time, salah_time) VALUES ($1, $2, $3, $4)',
+          [mosque_id, prayer.charAt(0).toUpperCase() + prayer.slice(1), adhan, salah]
+        );
+      }
+    });
 
     await Promise.all(updatePromises);
 
